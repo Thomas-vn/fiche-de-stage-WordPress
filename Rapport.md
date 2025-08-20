@@ -147,3 +147,5 @@ Ensuite, configuer Wordpress.
 
 ## Troisième partie : installation distante 
 ###  Procédure d’installation de WordPress sur une VM distante
+
+Comme à l'étape précédente, l'installation de Wordpress sur la VM a été effectuée avec l'aide de la documentation suivante : https://ubuntu.com/tutorials/install-and-configure-wordpress#1-overview
