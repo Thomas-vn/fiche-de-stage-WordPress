@@ -1,5 +1,40 @@
 # Rapport - Stage Wordpress
 
+>- [Rapport - Stage Wordpress](#rapport---stage-wordpress)
+- [Rapport - Stage Wordpress](#rapport---stage-wordpress)
+  - [Première partie : à propos de WordPress](#première-partie--à-propos-de-wordpress)
+    - [Qu'est-ce que Wordpress](#quest-ce-que-wordpress)
+    - [WordPress est-il beaucoup utilisé ?](#wordpress-est-il-beaucoup-utilisé-)
+    - [Combien coûte WordPress ?](#combien-coûte-wordpress-)
+    - [Quelle est la différence entre wordpress.com et wordpress.org](#quelle-est-la-différence-entre-wordpresscom-et-wordpressorg)
+    - [Qu'est-ce qu'un CMS](#quest-ce-quun-cms)
+  - [Deuxième partie : installation locale](#deuxième-partie--installation-locale)
+    - [De quoi WordPress a-t-il besoin pour fonctionner ?](#de-quoi-wordpress-a-t-il-besoin-pour-fonctionner-)
+    - [Eléments nécessaires pour que Wordpress puisse fonctionner correctement :](#eléments-nécessaires-pour-que-wordpress-puisse-fonctionner-correctement-)
+  - [Troisième partie : installation distante](#troisième-partie--installation-distante)
+    - [Procédure d’installation de WordPress sur une VM](#procédure-dinstallation-de-wordpress-sur-une-vm)
+    - [Etapes nécessaires à l'installation](#etapes-nécessaires-à-linstallation)
+      - [1. Installation des dépendances](#1-installation-des-dépendances)
+      - [2. Installation de Wordpress](#2-installation-de-wordpress)
+      - [3.1 Configuration d'Apache pour Wordpress](#31-configuration-dapache-pour-wordpress)
+      - [4. Configuration de la DB](#4-configuration-de-la-db)
+      - [5. Configuration de Wordpress à la DB](#5-configuration-de-wordpress-à-la-db)
+      - [6. Accéder à l'interface Wordpress](#6-accéder-à-linterface-wordpress)
+      - [Problèmes rencontrés avec l'installation de Wordpress à distance :](#problèmes-rencontrés-avec-linstallation-de-wordpress-à-distance-)
+    - [3.2 Side Quest : installation de phpmyadmin, accessible par un autre port](#32-side-quest--installation-de-phpmyadmin-accessible-par-un-autre-port)
+      - [1. Mettre à jour les paquets installés \& installation de phpMyAdmin](#1-mettre-à-jour-les-paquets-installés--installation-de-phpmyadmin)
+      - [2. Ajout du port d'écoute dans `/etc/apache2/ports.conf`](#2-ajout-du-port-découte-dans-etcapache2portsconf)
+      - [3. Ajout de la configuration d'Apache pour l'accès à PhpMyAdmin](#3-ajout-de-la-configuration-dapache-pour-laccès-à-phpmyadmin)
+      - [4. Redémarrer Apache2 et vérifier si la configuration tourne correctement](#4-redémarrer-apache2-et-vérifier-si-la-configuration-tourne-correctement)
+    - [3.3 Tour du propriétaire - Que manque-t-il pour que mon site soit opérationnel ?](#33-tour-du-propriétaire---que-manque-t-il-pour-que-mon-site-soit-opérationnel-)
+  - [Quatrième partie : Développement avec Docker (Dev)](#quatrième-partie--développement-avec-docker-dev)
+      - [C'est quoi Docker ?](#cest-quoi-docker-)
+      - [Quelle est la différence entre Docker et la virtualisation ?](#quelle-est-la-différence-entre-docker-et-la-virtualisation-)
+      - [Kit de démarrage de Wordpress avec Docker.](#kit-de-démarrage-de-wordpress-avec-docker)
+      - [Quelle est la différence entre Dockerfile, Docker et Docker compose ?](#quelle-est-la-différence-entre-dockerfile-docker-et-docker-compose-)
+      - [Différentes notions de Docker](#différentes-notions-de-docker)
+
+
 ## Première partie : à propos de WordPress
 
 ### Qu'est-ce que Wordpress
@@ -274,4 +309,90 @@ sudo ss -tulnp | grep :8080
 ```
 
 L'URL est maintenant accessible via le lien suivant : http://<ip_vm>:8080/phpmyadmin. 
+
+### 3.3 Tour du propriétaire - Que manque-t-il pour que mon site soit opérationnel ? 
+
+Pour que le site Wordpress soit opérationnel, il faut :
+- choisir un thème dans apparence 
+- créer des pages (pages d'accueil et secondaires)
+- Permalinks (URLs propres)
+- installation de plugins comme SEO
+
+![Screenshot du site](<Capture d'écran 2025-08-26 141346.png>)
+
+## Quatrième partie : Développement avec Docker (Dev)
+
+#### C'est quoi Docker ?
+Docker est un ervice permettant de créer, déployer et gérer des conteneurs. 
+
+#### Quelle est la différence entre Docker et la virtualisation ?
+Les conteneurs crées par Docker partagent le même noyau et ressources que la machine hôte, ce qui le rend bien plus léger et permet aux application de tourner de manière autonome. La virtualisation émule un ordinateur complet avec son OS et des ressources virtuelles propres à elle. Elles (VM) sont généralement plus lourdes et consomment plus de ressources.
+
+#### Kit de démarrage de Wordpress avec Docker. 
+
+1. Installer docker : 
+
+```sh
+sudo apt-get update 
+sudo apt-get install docker
+```
+
+2. Créer un fichier docker-compose.yaml avec le contenu suivant :
+
+```yaml
+version: "3.9"
+
+services: 
+  db: 
+    image: mysql:8.0
+    container_name: wordpress_db
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: epfl
+    volumes: 
+      - db_data:/var/lib/mysql
+
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress_app
+    depends_on:
+      - db
+    ports: 
+      - "8080:80"
+    restart: always
+    environment: 
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: epfl
+      WORDPRESS_DB_NAME: wordpress
+    volumes: 
+      - wordpress_data:/srv/www/wordpress
+
+volumes: 
+  db_data:
+  wordpress_data:
+```
+
+3. Lancer le container : 
+
+Premièrement, vérifier que docker soit bien en route et ensuite générer le container
+```sh
+docker compose up -d
+```
+
+4. Accéder à l'adresse http://localhost et vérifier que tout fonctionne
+
+#### Quelle est la différence entre Dockerfile, Docker et Docker compose ?
+- Dockerfile : Fichier texte contenant des instructions sur la génération d'une image Docker. S'exécute avec `Docker build`.
+- Docker compose : Permet d'orchestrer les conteneurs issues des images Dockerfile. Il définit les services, les ports exposés et volumes montés. S'exécute avec la commande `docker compose up -d`
+- Docker : Moteur qui exécute les conteneurs et responsable de la gestion/suppression des conteneurs. S'exécute avec `docker run`, `docker stop`, `docker ps`, ...
+
+#### Différentes notions de Docker
+- Ports : canaux de communication entre le conteneur et l'extérieur (mappage de 8080 vers 80 : `8080:80`)
+- Volumes : répertoies qui sont partagés entre machine hôte et conteneur. 
+- Environnements : permettent de configurer les applications qui tournent à l'intérieur du conteneur
+- entrer dans un Docker : accéder à l'intérieur d'un container pour exécuter des commandes et inspecter son contenu
 
