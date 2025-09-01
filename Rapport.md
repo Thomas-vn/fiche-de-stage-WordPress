@@ -33,6 +33,10 @@
       - [Kit de démarrage de Wordpress avec Docker.](#kit-de-démarrage-de-wordpress-avec-docker)
       - [Quelle est la différence entre Dockerfile, Docker et Docker compose ?](#quelle-est-la-différence-entre-dockerfile-docker-et-docker-compose-)
       - [Différentes notions de Docker](#différentes-notions-de-docker)
+      - [Diagramme des tables](#diagramme-des-tables)
+  - [Cinquième partie : déploiement avec Docker (Ops)](#cinquième-partie--déploiement-avec-docker-ops)
+    - [Kit de démarrage pour déployer Wordpress dans un container Docker sur une VM](#kit-de-démarrage-pour-déployer-wordpress-dans-un-container-docker-sur-une-vm)
+      - [Mon déploiement en prod est-il en tout point similaire à celui sur mon ordinateur ?](#mon-déploiement-en-prod-est-il-en-tout-point-similaire-à-celui-sur-mon-ordinateur-)
 
 
 ## Première partie : à propos de WordPress
@@ -395,4 +399,55 @@ docker compose up -d
 - Volumes : répertoies qui sont partagés entre machine hôte et conteneur. 
 - Environnements : permettent de configurer les applications qui tournent à l'intérieur du conteneur
 - entrer dans un Docker : accéder à l'intérieur d'un container pour exécuter des commandes et inspecter son contenu
+
+#### Diagramme des tables
+![Diagramme des tables](img/img_rapports/UML_DB.png)
+
+## Cinquième partie : déploiement avec Docker (Ops)
+
+### Kit de démarrage pour déployer Wordpress dans un container Docker sur une VM
+
+1. Clôner le repository git une fois accédé à la VM : 
+```sh 
+git clone https://github.com/Thomas-vn/fiche-de-stage-WordPress/tree/main?tab=readme-ov-file#
+```
+
+2. Mettre en place l'environnement d'exécution de Wordpress et de Docker. 
+Un fichier Makefile a été prévu à cet effet, il suffit juste d'exécuter les commandes suivantes au répertoire courant du projet.
+
+  a. Installer Docker sur la machine
+  ```sh
+  make install-docker
+  ``` 
+
+  b. Mise en place de l'image Wordpress et phpmyadmin dans 3 containers: 
+  ```sh
+  make start-wordpress
+  ```
+
+  c. (optionnel) Autres commandes utiles:
+  Arrêter les containers :
+  ```sh
+  make stop-wordpress
+  ```
+
+  Supprimer les containers : 
+  ```sh
+  make clean
+  ```
+
+#### Mon déploiement en prod est-il en tout point similaire à celui sur mon ordinateur ?
+
+Non, car ma machine personnellea comme OS Windows 11 avec un Sub-system Linux (WSL). Elle nécessite Docker Desktop pour lancer les images Docker et la syntaxe utilisée est relativement différente. De plus, la gestion des volumes entre les containers et la machine hôte se fait sur le File System Windows. 
+
+La VM sur laquelle Wordpress a été déployée est une machine Linux: 
+
+```sh
+$ lsb_release -a
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 24.04.3 LTS
+Release:        24.04
+Codename:       noble
+```
 
