@@ -4,7 +4,6 @@ networks:
   wp-back:
 
 services:
-
   db:
     image: mysql:5.7
     volumes:
@@ -29,7 +28,7 @@ services:
       MYSQL_PASSWORD: wp-pass
       MYSQL_ROOT_PASSWORD: rootPassword
     ports:
-      - 3001:80
+      - 8080:80
     networks:
       - wp-back
 

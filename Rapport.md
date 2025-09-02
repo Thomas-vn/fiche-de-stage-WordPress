@@ -37,6 +37,23 @@
   - [Cinquième partie : déploiement avec Docker (Ops)](#cinquième-partie--déploiement-avec-docker-ops)
     - [Kit de démarrage pour déployer Wordpress dans un container Docker sur une VM](#kit-de-démarrage-pour-déployer-wordpress-dans-un-container-docker-sur-une-vm)
       - [Mon déploiement en prod est-il en tout point similaire à celui sur mon ordinateur ?](#mon-déploiement-en-prod-est-il-en-tout-point-similaire-à-celui-sur-mon-ordinateur-)
+      - [1. Est-ce que le site peut envoyer des emails, par exemple lorsqu’un mot-de-passe est perdu ?](#1-est-ce-que-le-site-peut-envoyer-des-emails-par-exemple-lorsquun-mot-de-passe-est-perdu-)
+      - [2. Est-ce que le site est sécurisé par HTTPS assurant que les informations transitant entre le client et le serveur soient chiffrées ?](#2-est-ce-que-le-site-est-sécurisé-par-https-assurant-que-les-informations-transitant-entre-le-client-et-le-serveur-soient-chiffrées-)
+      - [3. Est-ce que les informations importantes du site sont sauvegardées et pourraient être utilisées dans un plan de reprise d’activité (PRA) ?](#3-est-ce-que-les-informations-importantes-du-site-sont-sauvegardées-et-pourraient-être-utilisées-dans-un-plan-de-reprise-dactivité-pra-)
+      - [4. Qui pourra accéder à votre site ? Est-il nécessaire de mettre en place un système d’authentification basé sur celui de l’entreprise ?](#4-qui-pourra-accéder-à-votre-site--est-il-nécessaire-de-mettre-en-place-un-système-dauthentification-basé-sur-celui-de-lentreprise-)
+      - [Mise en place d'un certificat](#mise-en-place-dun-certificat)
+  - [Sixième partie: Wordpress@EPFL](#sixième-partie-wordpressepfl)
+  - [Volumétrie](#volumétrie)
+    - [Posez-vous la question de combien de sites sont agrégés ensembles](#posez-vous-la-question-de-combien-de-sites-sont-agrégés-ensembles)
+    - [Pourquoi pensez-vous que cette façon de faire a été choisie ?](#pourquoi-pensez-vous-que-cette-façon-de-faire-a-été-choisie-)
+  - [Dernière partie : wrap up](#dernière-partie--wrap-up)
+      - [3 Alternatives ou concurrents à WordPress](#3-alternatives-ou-concurrents-à-wordpress)
+      - [Développmeent et modèle commercial Wordpress](#développmeent-et-modèle-commercial-wordpress)
+      - [Sites Web utilisés par Wordpress](#sites-web-utilisés-par-wordpress)
+  - [Conclusion](#conclusion)
+      - [Avantages et inconvénients de WordPress](#avantages-et-inconvénients-de-wordpress)
+      - [Est-ce un bon choix de CMS pour l'EFPL ?](#est-ce-un-bon-choix-de-cms-pour-lefpl-)
+      - [Bilan du stage](#bilan-du-stage)
 
 
 ## Première partie : à propos de WordPress
@@ -451,3 +468,87 @@ Release:        24.04
 Codename:       noble
 ```
 
+#### 1. Est-ce que le site peut envoyer des emails, par exemple lorsqu’un mot-de-passe est perdu ?
+
+Il existe des plugins tel que WP Mail SMTP, Mailgun ou Sengrid pour envoyer des mails par le site. Néanmoins, une configuration des paramètres est nécessaire dans le tableau de bord Wordpress. 
+
+#### 2. Est-ce que le site est sécurisé par HTTPS assurant que les informations transitant entre le client et le serveur soient chiffrées ?
+
+Non, le site utilise uniquement le port HTTP pour le transit d'informations. Il est nécessaire de mettre en place un certificat SSL/TLS pour activer HTTPS.
+
+#### 3. Est-ce que les informations importantes du site sont sauvegardées et pourraient être utilisées dans un plan de reprise d’activité (PRA) ?
+
+Non, la configuration Wordpress effectuée ne comprend pas de sauvegarde automatique des données du site. Il existe des plugins pour effectuer des "Backups" pour sauvegarder les données du site.
+
+#### 4. Qui pourra accéder à votre site ? Est-il nécessaire de mettre en place un système d’authentification basé sur celui de l’entreprise ?
+
+Wordpress utilise un système d'authentification intégré qui permet de créer des utilisateurs et des rôles. 
+
+#### Mise en place d'un certificat 
+1. Générer une clé privée sur le site (OpenSSL)
+2. Générer une demande de certificat avec la clé privée (CSR)
+3. SOumettre la demande du certificat une authorité de certification (CA) et obtenir un certificat TLS/SSL
+4. Installer le certificat sur le serveur web 
+5. Configurer le certificat
+
+## Sixième partie: Wordpress@EPFL
+
+## Volumétrie 
+
+### Posez-vous la question de combien de sites sont agrégés ensembles
+Il existe environ 900 sites qui sont abrégés ensemble au sein du domaine epfl.ch
+
+###  Pourquoi pensez-vous que cette façon de faire a été choisie ?
+- Pour des raisons d'évolutivité et maintenances
+- Gouvernance des données facilitée
+- Personnalisation de certaines fonctionnalités et contenu 
+
+## Dernière partie : wrap up
+
+#### 3 Alternatives ou concurrents à WordPress 
+- a. Joomla 
+- b. Drupal 
+- c. Hostinger
+
+#### Développmeent et modèle commercial Wordpress
+
+Le développement est géré par WordPress Foundation pour promouvoir le développement de l'application. Ils peuvent ganger de l'argent en offrant de l'hébergement des sites, la personnalisation des services/thèmes/plugins et la formation de l'outil.
+
+#### Sites Web utilisés par Wordpress
+- Site de la BBC 
+- Site de la NASA
+- Site de l'EPFL
+
+## Conclusion 
+
+#### Avantages et inconvénients de WordPress
+
+`+` : Facilité d'utilisation 
+`+` : Thèmes personnalisables
+`+` : possibilité d'ajouter et de créer ses propres plugins
+
+`-` : Performance peu optimale
+
+#### Est-ce un bon choix de CMS pour l'EFPL ?
+
+WordPress est un choix judicieux pour l'EPFL en raison de sa facilité d'utilisation et de sa flexibilité. En effet, il est facile d'ajouter de nouveaux sites ou de modifier les configurations existantes. De plus, WordPress est un outil résilient et adaptable, capable de répondre aux besoins évolutifs de l'institution.
+
+#### Bilan du stage
+
+Tout au long de ce stage, j'ai appris à :
+
+- Installer et configurer WordPress sur une machine locale
+- Déployer WordPress sur une VM avec Docker
+- Configurer phpMyAdmin pour accéder à la base de données
+- Mettre en place un certificat SSL pour sécuriser le site
+- Créer un kit de démarrage pour déployer WordPress dans un container Docker sur une VM
+- Développer un site Web avec WordPress et personnaliser son contenu
+
+Ce que j'ai aimé :
+- La configuration de WordPress et la personnalisation de son contenu
+- Le déploiement de WordPress sur une VM avec Docker, qui m'a permis de comprendre les 
+principes de la conteneurisation
+
+Ce que j'ai moins aimé :
+- L'apprentissage de l'outil WordPress, qui a nécessité une certaine période d'adaptation
+- Le débuggage de déploiement, qui a été parfois fastidieux et a nécessité une certaine patience

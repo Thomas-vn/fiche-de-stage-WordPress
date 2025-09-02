@@ -22,4 +22,4 @@ stop-wordpress:
 # Clean the containers and images
 clean:
 	@echo "Cleaning all containers and images..."
-	@sudo docker-compose  ${DOCKER_COMPOSE_FILE} down --rmi all
+	@sudo docker-compose  ${DOCKER_COMPOSE_FILE} down --rmi all 
